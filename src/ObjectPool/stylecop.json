@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "indentation": {
+      "useTabs": false
+    },
+    "orderingRules": {
+      "elementOrder": [
+        "accessibility",
+        "constant",
+        "static",
+        "readonly"
+      ],
+      "systemUsingDirectivesFirst": false,
+      "usingDirectivesPlacement": "outsideNamespace"
+    },
+    "namingRules": {
+      "includeInferredTupleElementNames": true,
+      "tupleElementNameCasing": "camelCase"
+    },
+    "layoutRules": {
+      "newlineAtEndOfFile": "omit",
+      "allowConsecutiveUsings": true
+    },
+    "documentationRules": {
+      "companyName": "Greg Bair",
+      "xmlHeader": false,
+      "headerDecoration": "-----------------------------------------------------------------------",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under MIT license. See LICENSE file in the project root for full license information."
+    }
+  }
+}
