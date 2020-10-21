@@ -11,17 +11,17 @@ namespace ObjectPool
     /// </summary>
     /// <typeparam name="T">The type of object to pool.</typeparam>
     public interface IObjectPool<T> : IDisposable
-        where T : IDisposable, IAsyncDisposable
+        where T : IDisposable
     {
         /// <summary>
         /// Gets or sets the connection activator.
         /// </summary>
-        Func<T, bool> ConnectionActivator { get; set; }
+        Func<T, bool> ObjectActivator { get; set; }
 
         /// <summary>
         /// Gets or sets the connection passivator.
         /// </summary>
-        Func<T, bool> ConnectionPassivator { get; set; }
+        Func<T, bool> ObjectPassivator { get; set; }
 
         /// <summary>
         /// Gets the available count of objects in the pool.
