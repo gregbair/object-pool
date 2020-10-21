@@ -10,18 +10,21 @@ namespace ObjectPool
     /// Intercepts calls for <typeparamref name="TProxy"/>.
     /// </summary>
     /// <typeparam name="TProxy">The type to intercept calls for.</typeparam>
-    public class PooledObjectInterceptor<TProxy> : IInterceptor
+    internal class PooledObjectInterceptor<TProxy> : IInterceptor
         where TProxy : class, IDisposable
     {
+        private readonly IObjectPool<TProxy> _pool;
+        private readonly PooledObjectProxy<TProxy> _proxy;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PooledObjectInterceptor{TProxy}"/> class.
         /// </summary>
         /// <param name="pool">The pool to which this interceptor should return objects to.</param>
-        /// <param name="actual">The actual object that is proxied.</param>
-        public PooledObjectInterceptor(IObjectPool<TProxy> pool, TProxy actual)
+        /// <param name="proxy">The proxy object wrapper.</param>
+        public PooledObjectInterceptor(IObjectPool<TProxy> pool, PooledObjectProxy<TProxy> proxy)
         {
             _pool = pool ?? throw new ArgumentNullException(nameof(pool));
-            _actual = actual ?? throw new ArgumentNullException(nameof(actual));
+            _proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
         }
 
         /// <inheritdoc/>
@@ -38,11 +41,8 @@ namespace ObjectPool
             }
             else
             {
-                _pool.ReturnObject(_actual);
+                _pool.ReturnObject(_proxy);
             }
         }
-
-        private readonly IObjectPool<TProxy> _pool;
-        private readonly TProxy _actual;
     }
 }

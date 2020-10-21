@@ -1,7 +1,9 @@
 // Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
+using Optional;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ObjectPool
@@ -9,19 +11,19 @@ namespace ObjectPool
     /// <summary>
     /// Interface for implementing an object pool.
     /// </summary>
-    /// <typeparam name="T">The type of object to pool.</typeparam>
-    public interface IObjectPool<T> : IDisposable
-        where T : IDisposable
+    /// <typeparam name="TObject">The type of object to pool.</typeparam>
+    public interface IObjectPool<TObject> : IDisposable
+        where TObject : class, IDisposable
     {
         /// <summary>
-        /// Gets or sets the connection activator.
+        /// Gets the connection activator.
         /// </summary>
-        Func<T, bool> ObjectActivator { get; set; }
+        Func<TObject, bool> ObjectActivator { get; }
 
         /// <summary>
-        /// Gets or sets the connection passivator.
+        /// Gets the connection passivator.
         /// </summary>
-        Func<T, bool> ObjectPassivator { get; set; }
+        Func<TObject, bool> ObjectPassivator { get; }
 
         /// <summary>
         /// Gets the available count of objects in the pool.
@@ -36,13 +38,14 @@ namespace ObjectPool
         /// <summary>
         /// Retrieves the object from the pool.
         /// </summary>
-        /// <returns>An object of type <typeparamref name="T" />.</returns>
-        Task<T> GetObjectAsync();
+        /// <param name="token">A <see cref="CancellationToken"/> used for timeouts.</param>
+        /// <returns>An object of type <typeparamref name="TObject" />.</returns>
+        Task<Option<TObject>> GetObjectAsync(CancellationToken token = default);
 
         /// <summary>
         /// Returns the object to the pool.
         /// </summary>
-        /// <param name="obj">An object of type <typeparamref name="T" />.</param>
-        void ReturnObject(T obj);
+        /// <param name="obj">A wrapper to return to the pool.</param>
+        void ReturnObject(PooledObjectProxy<TObject> obj);
     }
 }

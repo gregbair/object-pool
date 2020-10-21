@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace ObjectPool.Tests
@@ -8,25 +7,14 @@ namespace ObjectPool.Tests
     public class PooledObjectProxyTests
     {
         [Fact]
-        public void ConstructorThrowsNullInterceptor()
+        public void ConstructorThrowsNullActual()
         {
-            Action act = () => new PooledObjectProxy<IFoo>(null!, new Mock<IFoo>().Object);
-            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("interceptor");
+            Action act = () => new PooledObjectProxy<ISomeInterface>(null!);
+            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("actual");
         }
 
-        [Fact]
-        public void ConstructorThrowsNullObject()
+        public interface ISomeInterface : IDisposable
         {
-            Action act = () =>
-                new PooledObjectProxy<IFoo>(
-                    new PooledObjectInterceptor<IFoo>(new Mock<IObjectPool<IFoo>>().Object, new Mock<IFoo>().Object),
-                    null!);
-            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("obj");
-        }
-
-        public interface IFoo : IDisposable
-        {
-
         }
     }
 }

@@ -24,6 +24,6 @@ namespace ObjectPool
         /// </summary>
         /// <param name="obj">The object to activate.</param>
         /// <returns>A <see cref="Task"/>.</returns>
-        Task Activate(TObject obj);
+        Task ActivateAsync(TObject obj);
     }
 }

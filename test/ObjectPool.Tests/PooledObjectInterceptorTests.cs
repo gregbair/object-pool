@@ -12,23 +12,28 @@ namespace ObjectPool.Tests
         public void ConstructorThrowsNullPool()
         {
             var mockDisposable = new Mock<IDisposable>();
-            Action act = () => new PooledObjectInterceptor<IDisposable>(null!, mockDisposable.Object);
+            Action act = () =>
+                new PooledObjectInterceptor<IDisposable>(
+                    null!,
+                    new PooledObjectProxy<IDisposable>(mockDisposable.Object));
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("pool");
         }
 
         [Fact]
-        public void ConstructorThrowsNullActual()
+        public void ConstructorThrowsNullProxy()
         {
             var pool = new Mock<IObjectPool<IDisposable>>();
             Action act = () => new PooledObjectInterceptor<IDisposable>(pool.Object, null!);
-            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("actual");
+            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("proxy");
         }
 
         [Fact]
         public void InterceptThrowsNullInvocation()
         {
             var pool = new Mock<IObjectPool<IFoo>>();
-            var sut = new PooledObjectInterceptor<IFoo>(pool.Object, new Mock<IFoo>().Object);
+            var sut = new PooledObjectInterceptor<IFoo>(
+                pool.Object,
+                new PooledObjectProxy<IFoo>(new Mock<IFoo>().Object));
             Action act = () => sut.Intercept(null!);
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("invocation");
         }
@@ -41,7 +46,7 @@ namespace ObjectPool.Tests
 
             var generator = new ProxyGenerator();
             var obj = generator.CreateInterfaceProxyWithTarget(mockFoo.Object,
-                new PooledObjectInterceptor<IFoo>(pool.Object, mockFoo.Object));
+                new PooledObjectInterceptor<IFoo>(pool.Object, new PooledObjectProxy<IFoo>(mockFoo.Object)));
 
             obj.DoThing("bar");
 
@@ -53,14 +58,15 @@ namespace ObjectPool.Tests
         {
             var mockFoo = new Mock<IFoo>();
             var pool = new Mock<IObjectPool<IFoo>>();
+            var proxy = new PooledObjectProxy<IFoo>(mockFoo.Object);
 
             var generator = new ProxyGenerator();
             var obj = generator.CreateInterfaceProxyWithTarget(mockFoo.Object,
-                new PooledObjectInterceptor<IFoo>(pool.Object, mockFoo.Object));
+                new PooledObjectInterceptor<IFoo>(pool.Object, proxy));
 
             obj.Dispose();
 
-            pool.Verify(x => x.ReturnObject(mockFoo.Object), Times.Once);
+            pool.Verify(x => x.ReturnObject(proxy), Times.Once);
         }
 
         public interface IFoo : IDisposable
