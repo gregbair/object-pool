@@ -141,10 +141,46 @@ namespace ObjectPool.Tests
             mockFoo.Verify(x => x.Dispose(), Times.Never);
         }
 
-        public interface IFoo : IDisposable
+        [Fact]
+        public async Task GetObjectThrowsWhenFactoryThrows()
         {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            mockFactory.Setup(x => x.Create()).Throws<InvalidOperationException>();
 
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object);
+
+            Func<Task> act = async () => await sut.GetObjectAsync();
+
+            (await act.Should().ThrowExactlyAsync<PoolException>())
+                .WithInnerExceptionExactly<InvalidOperationException>();
         }
 
+        [Fact]
+        public async Task TimeoutExpires()
+        {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            var mockObj = new Mock<IFoo>();
+            mockFactory.Setup(x => x.Create()).Returns(mockObj.Object);
+
+            var options = new ObjectPoolOptions
+            {
+                MaxObjects = 1,
+                AcquisitionTimeout = TimeSpan.FromMilliseconds(500),
+            };
+
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, options);
+
+            using var obj = (await sut.GetObjectAsync()).ValueOrFailure();
+
+            Func<Task> act = async () => await sut.GetObjectAsync();
+
+            act.Should().ThrowExactly<PoolExhaustedException>();
+        }
     }
+
+    public interface IFoo : IDisposable
+    {
+
+    }
+
 }

@@ -5,6 +5,7 @@ using Castle.DynamicProxy;
 using Optional;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -74,19 +75,62 @@ namespace ObjectPool
                 return existing.Actual.SomeNotNull();
             }
 
-            var obj = _factory.Create();
+            if (_active.Count >= _options.MaxObjects)
+            {
+                return await BlockAcquisition(token).ConfigureAwait(false);
+            }
+
+            TObject? obj;
+            try
+            {
+                obj = _factory.Create();
+            }
+            catch (Exception ex)
+            {
+                throw new PoolException("Exception thrown when instantiating object", ex);
+            }
 
             if (ObjectActivator(obj))
             {
-                await _factory.ActivateAsync(obj).ConfigureAwait(false);
+                try
+                {
+                    await _factory.ActivateAsync(obj).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw new PoolException("Exception thrown when activating object", ex);
+                }
             }
 
             var newProxy = new PooledObjectProxy<TObject>(obj);
             _active.TryAdd(newProxy.Id, newProxy);
             var genProxy =
-                _generator.CreateInterfaceProxyWithTarget(obj, new PooledObjectInterceptor<TObject>(this, newProxy));
+                _generator.CreateInterfaceProxyWithTarget(
+                    obj,
+                    new PooledObjectInterceptor<TObject>(this, newProxy));
 
             return genProxy.SomeNotNull();
+        }
+
+        private async Task<Option<TObject>> BlockAcquisition(CancellationToken token)
+        {
+            var timer = Stopwatch.StartNew();
+            var timeout = _options.AcquisitionTimeout;
+            while (true)
+            {
+                if (_available.TryPop(out var existing))
+                {
+                    _active.TryAdd(existing.Id, existing);
+                    return existing.Actual.SomeNotNull();
+                }
+
+                if (timer.Elapsed > timeout)
+                {
+                    throw new PoolExhaustedException("Pool empty and timeout exceeded");
+                }
+
+                await Task.Delay(TimeSpan.FromMilliseconds(10), token).ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc/>

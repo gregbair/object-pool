@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ObjectPool
@@ -14,11 +15,16 @@ namespace ObjectPool
         /// <summary>
         /// Gets or sets the min number of objects allowed in the pool.
         /// </summary>
-        public int MinObjects { get; set; }
+        public int MinObjects { get; set; } = 3;
 
         /// <summary>
         /// Gets or sets the max number of objects allowed in the pool.
         /// </summary>
-        public int MaxObjects { get; set; }
+        public int MaxObjects { get; set; } = 10;
+
+        /// <summary>
+        /// Gets or sets the amount of time to wait for acquisition before throwing an exception.
+        /// </summary>
+        public TimeSpan AcquisitionTimeout { get; set; } = TimeSpan.FromSeconds(30);
     }
 }
