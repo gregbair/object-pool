@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using Optional.Unsafe;
 using Xunit;
@@ -89,6 +88,57 @@ namespace ObjectPool.Tests
             await sut.GetObjectAsync();
             sut.AvailableCount.Should().Be(0);
             sut.ActiveCount.Should().Be(1);
+        }
+
+        [Fact]
+        public async Task DisposeThrowsActiveObjects()
+        {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            var mockFoo = new Mock<IFoo>();
+            mockFactory.Setup(x => x.Create()).Returns(mockFoo.Object);
+
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object);
+
+            await sut.GetObjectAsync();
+
+            Action act = () => sut.Dispose();
+
+            act.Should().ThrowExactly<InvalidOperationException>().Which.Message.Should()
+                .ContainEquivalentOf("1 active object(s)");
+        }
+
+        [Fact]
+        public async Task DisposeDisposesObjects()
+        {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            var mockFoo = new Mock<IFoo>();
+            mockFactory.Setup(x => x.Create()).Returns(mockFoo.Object);
+
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => true);
+
+            var proxy = (await sut.GetObjectAsync()).ValueOrFailure().As<IFoo>();
+            proxy.Dispose();
+
+            sut.Dispose();
+
+            mockFoo.Verify(x => x.Dispose(), Times.Once);
+        }
+
+        [Fact]
+        public async Task DisposePassivatorFalseDoesNotDispose()
+        {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            var mockFoo = new Mock<IFoo>();
+            mockFactory.Setup(x => x.Create()).Returns(mockFoo.Object);
+
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => false);
+
+            var proxy = (await sut.GetObjectAsync()).ValueOrFailure().As<IFoo>();
+            proxy.Dispose();
+
+            sut.Dispose();
+
+            mockFoo.Verify(x => x.Dispose(), Times.Never);
         }
 
         public interface IFoo : IDisposable

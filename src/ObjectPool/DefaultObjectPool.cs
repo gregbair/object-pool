@@ -123,7 +123,18 @@ namespace ObjectPool
 
             if (disposing)
             {
-                return;
+                if (!_active.IsEmpty)
+                {
+                    throw new InvalidOperationException($"There are still {_active.Count} active object(s)");
+                }
+
+                foreach (var proxy in _available)
+                {
+                    if (ObjectPassivator(proxy.Actual))
+                    {
+                        proxy.Actual.Dispose();
+                    }
+                }
             }
 
             _isDisposed = true;
