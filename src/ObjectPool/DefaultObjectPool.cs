@@ -14,7 +14,7 @@ namespace ObjectPool
     /// Standard implementation of <see cref="IObjectPool{TObject}"/>.
     /// </summary>
     /// <typeparam name="TObject">The type of object to pool.</typeparam>
-    public class DefaultObjectPool<TObject> : IObjectPool<TObject>
+    public sealed class DefaultObjectPool<TObject> : IObjectPool<TObject>
         where TObject : class, IDisposable
     {
         private readonly IObjectPoolFactory<TObject> _factory;
@@ -38,10 +38,10 @@ namespace ObjectPool
         public Func<TObject, bool> ObjectPassivator { get; }
 
         /// <inheritdoc />
-        public uint AvailableCount { get; }
+        public int AvailableCount => _available.Count;
 
         /// <inheritdoc/>
-        public uint ActiveCount { get; }
+        public int ActiveCount => _active.Count;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultObjectPool{TObject}"/> class.
@@ -56,8 +56,6 @@ namespace ObjectPool
             ObjectPassivator = objectPassivator ?? (_ => true);
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _options = options ?? new ObjectPoolOptions();
-            AvailableCount = 0;
-            ActiveCount = 0;
             _generator = new ProxyGenerator();
         }
 
@@ -70,14 +68,15 @@ namespace ObjectPool
                 return Option.None<TObject>();
             }
 
-            if (_available.TryPop(out var p))
+            if (_available.TryPop(out var existing))
             {
-                return p.Actual.SomeNotNull();
+                _active.TryAdd(existing.Id, existing);
+                return existing.Actual.SomeNotNull();
             }
 
             var obj = _factory.Create();
 
-            if (_options.ActivateOnCreate)
+            if (ObjectActivator(obj))
             {
                 await _factory.ActivateAsync(obj).ConfigureAwait(false);
             }
@@ -91,9 +90,17 @@ namespace ObjectPool
         }
 
         /// <inheritdoc/>
-        public void ReturnObject(PooledObjectProxy<TObject> obj)
+        public void ReturnObject(PooledObjectProxy<TObject> proxyObj)
         {
-            throw new NotImplementedException();
+            if (proxyObj is null)
+            {
+                throw new ArgumentNullException(nameof(proxyObj));
+            }
+
+            if (_active.TryGetValue(proxyObj.Id, out var proxy) && _active.TryRemove(proxy.Id, out _))
+            {
+                _available.Push(proxyObj);
+            }
         }
 
         /// <inheritdoc/>
@@ -107,7 +114,7 @@ namespace ObjectPool
         /// Disposes all managed references.
         /// </summary>
         /// <param name="disposing">Whether we're actually disposing.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_isDisposed)
             {

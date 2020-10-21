@@ -28,12 +28,12 @@ namespace ObjectPool
         /// <summary>
         /// Gets the available count of objects in the pool.
         /// </summary>
-        uint AvailableCount { get; }
+        int AvailableCount { get; }
 
         /// <summary>
         /// Gets the active count of objects in the pool.
         /// </summary>
-        uint ActiveCount { get; }
+        int ActiveCount { get; }
 
         /// <summary>
         /// Retrieves the object from the pool.
@@ -45,7 +45,7 @@ namespace ObjectPool
         /// <summary>
         /// Returns the object to the pool.
         /// </summary>
-        /// <param name="obj">A wrapper to return to the pool.</param>
-        void ReturnObject(PooledObjectProxy<TObject> obj);
+        /// <param name="proxyObj">A wrapper to return to the pool.</param>
+        void ReturnObject(PooledObjectProxy<TObject> proxyObj);
     }
 }
