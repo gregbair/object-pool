@@ -45,7 +45,7 @@ namespace ObjectPool
         /// <summary>
         /// Returns the object to the pool.
         /// </summary>
-        /// <param name="proxyObj">A wrapper to return to the pool.</param>
-        void ReturnObject(PooledObjectProxy<TObject> proxyObj);
+        /// <param name="wrapper">A wrapper to return to the pool.</param>
+        void ReturnObject(PooledObjectWrapper<TObject> wrapper);
     }
 }

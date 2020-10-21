@@ -9,7 +9,7 @@ namespace ObjectPool
     /// A proxy to wrap objects of type <typeparamref name="TObject"/>.
     /// </summary>
     /// <typeparam name="TObject">The type of object to wrap.</typeparam>
-    public class PooledObjectProxy<TObject>
+    public class PooledObjectWrapper<TObject>
         where TObject : class, IDisposable
     {
         /// <summary>
@@ -23,10 +23,10 @@ namespace ObjectPool
         public TObject Actual { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PooledObjectProxy{TObject}"/> class.
+        /// Initializes a new instance of the <see cref="PooledObjectWrapper{TObject}"/> class.
         /// </summary>
         /// <param name="actual">The object to be wrapped.</param>
-        public PooledObjectProxy(TObject actual)
+        public PooledObjectWrapper(TObject actual)
         {
             Actual = actual ?? throw new ArgumentNullException(nameof(actual));
             Id = Guid.NewGuid();

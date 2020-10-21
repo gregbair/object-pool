@@ -24,11 +24,11 @@ namespace ObjectPool
 
         private readonly ProxyGenerator _generator;
 
-        private readonly ConcurrentStack<PooledObjectProxy<TObject>> _available =
-            new ConcurrentStack<PooledObjectProxy<TObject>>();
+        private readonly ConcurrentStack<PooledObjectWrapper<TObject>> _available =
+            new ConcurrentStack<PooledObjectWrapper<TObject>>();
 
-        private readonly ConcurrentDictionary<Guid, PooledObjectProxy<TObject>> _active =
-            new ConcurrentDictionary<Guid, PooledObjectProxy<TObject>>();
+        private readonly ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>> _active =
+            new ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>>();
 
         private bool _isDisposed;
 
@@ -102,7 +102,7 @@ namespace ObjectPool
                 }
             }
 
-            var newProxy = new PooledObjectProxy<TObject>(obj);
+            var newProxy = new PooledObjectWrapper<TObject>(obj);
             _active.TryAdd(newProxy.Id, newProxy);
             var genProxy =
                 _generator.CreateInterfaceProxyWithTarget(
@@ -134,16 +134,16 @@ namespace ObjectPool
         }
 
         /// <inheritdoc/>
-        public void ReturnObject(PooledObjectProxy<TObject> proxyObj)
+        public void ReturnObject(PooledObjectWrapper<TObject> wrapper)
         {
-            if (proxyObj is null)
+            if (wrapper is null)
             {
-                throw new ArgumentNullException(nameof(proxyObj));
+                throw new ArgumentNullException(nameof(wrapper));
             }
 
-            if (_active.TryGetValue(proxyObj.Id, out var proxy) && _active.TryRemove(proxy.Id, out _))
+            if (_active.TryGetValue(wrapper.Id, out var proxy) && _active.TryRemove(proxy.Id, out _))
             {
-                _available.Push(proxyObj);
+                _available.Push(wrapper);
             }
         }
 

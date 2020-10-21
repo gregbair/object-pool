@@ -15,7 +15,7 @@ namespace ObjectPool.Tests
             Action act = () =>
                 new PooledObjectInterceptor<IDisposable>(
                     null!,
-                    new PooledObjectProxy<IDisposable>(mockDisposable.Object));
+                    new PooledObjectWrapper<IDisposable>(mockDisposable.Object));
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("pool");
         }
 
@@ -24,7 +24,7 @@ namespace ObjectPool.Tests
         {
             var pool = new Mock<IObjectPool<IDisposable>>();
             Action act = () => new PooledObjectInterceptor<IDisposable>(pool.Object, null!);
-            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("proxy");
+            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("wrapper");
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace ObjectPool.Tests
             var pool = new Mock<IObjectPool<IFoo>>();
             var sut = new PooledObjectInterceptor<IFoo>(
                 pool.Object,
-                new PooledObjectProxy<IFoo>(new Mock<IFoo>().Object));
+                new PooledObjectWrapper<IFoo>(new Mock<IFoo>().Object));
             Action act = () => sut.Intercept(null!);
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("invocation");
         }
@@ -46,7 +46,7 @@ namespace ObjectPool.Tests
 
             var generator = new ProxyGenerator();
             var obj = generator.CreateInterfaceProxyWithTarget(mockFoo.Object,
-                new PooledObjectInterceptor<IFoo>(pool.Object, new PooledObjectProxy<IFoo>(mockFoo.Object)));
+                new PooledObjectInterceptor<IFoo>(pool.Object, new PooledObjectWrapper<IFoo>(mockFoo.Object)));
 
             obj.DoThing("bar");
 
@@ -58,7 +58,7 @@ namespace ObjectPool.Tests
         {
             var mockFoo = new Mock<IFoo>();
             var pool = new Mock<IObjectPool<IFoo>>();
-            var proxy = new PooledObjectProxy<IFoo>(mockFoo.Object);
+            var proxy = new PooledObjectWrapper<IFoo>(mockFoo.Object);
 
             var generator = new ProxyGenerator();
             var obj = generator.CreateInterfaceProxyWithTarget(mockFoo.Object,

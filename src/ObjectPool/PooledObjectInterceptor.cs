@@ -14,17 +14,17 @@ namespace ObjectPool
         where TProxy : class, IDisposable
     {
         private readonly IObjectPool<TProxy> _pool;
-        private readonly PooledObjectProxy<TProxy> _proxy;
+        private readonly PooledObjectWrapper<TProxy> _wrapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PooledObjectInterceptor{TProxy}"/> class.
         /// </summary>
         /// <param name="pool">The pool to which this interceptor should return objects to.</param>
-        /// <param name="proxy">The proxy object wrapper.</param>
-        public PooledObjectInterceptor(IObjectPool<TProxy> pool, PooledObjectProxy<TProxy> proxy)
+        /// <param name="wrapper">The proxy object wrapper.</param>
+        public PooledObjectInterceptor(IObjectPool<TProxy> pool, PooledObjectWrapper<TProxy> wrapper)
         {
             _pool = pool ?? throw new ArgumentNullException(nameof(pool));
-            _proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
+            _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
         }
 
         /// <inheritdoc/>
@@ -41,7 +41,7 @@ namespace ObjectPool
             }
             else
             {
-                _pool.ReturnObject(_proxy);
+                _pool.ReturnObject(_wrapper);
             }
         }
     }

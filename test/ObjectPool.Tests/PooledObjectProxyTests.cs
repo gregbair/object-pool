@@ -9,7 +9,7 @@ namespace ObjectPool.Tests
         [Fact]
         public void ConstructorThrowsNullActual()
         {
-            Action act = () => new PooledObjectProxy<ISomeInterface>(null!);
+            Action act = () => new PooledObjectWrapper<ISomeInterface>(null!);
             act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("actual");
         }
 

@@ -65,7 +65,7 @@ namespace ObjectPool.Tests
         {
             var sut = new DefaultObjectPool<IFoo>(new Mock<IObjectPoolFactory<IFoo>>().Object);
             Action act = () => sut.ReturnObject(null!);
-            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("proxyObj");
+            act.Should().ThrowExactly<ArgumentNullException>().Which.ParamName.Should().Be("wrapper");
         }
 
         [Fact]
