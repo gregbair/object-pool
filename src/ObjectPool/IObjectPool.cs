@@ -34,11 +34,6 @@ namespace ObjectPool
         uint ActiveCount { get; }
 
         /// <summary>
-        /// Initialize this object pool.
-        /// </summary>
-        void Initialize();
-
-        /// <summary>
         /// Retrieves the object from the pool.
         /// </summary>
         /// <returns>An object of type <typeparamref name="T" />.</returns>

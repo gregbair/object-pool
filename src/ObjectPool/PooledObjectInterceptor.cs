@@ -11,7 +11,7 @@ namespace ObjectPool
     /// </summary>
     /// <typeparam name="TProxy">The type to intercept calls for.</typeparam>
     public class PooledObjectInterceptor<TProxy> : IInterceptor
-        where TProxy : IDisposable
+        where TProxy : class, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PooledObjectInterceptor{TProxy}"/> class.
