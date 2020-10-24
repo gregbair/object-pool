@@ -23,3 +23,5 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Run benchmarks
+      run: dotnet run -c release -p benchmarks/ObjectPool.Benchmarks/ObjectPool.Benchmarks.csproj
