@@ -2,12 +2,14 @@
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ObjectPool
 {
     /// <summary>
     /// An exception for when the pool has no available objects.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class PoolExhaustedException : Exception
     {
         /// <summary>

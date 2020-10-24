@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
-using Castle.DynamicProxy;
 using Optional;
 using System;
 using System.Collections.Concurrent;
@@ -21,8 +20,6 @@ namespace ObjectPool
         private readonly IObjectPoolFactory<TObject> _factory;
 
         private readonly ObjectPoolOptions _options;
-
-        private readonly ProxyGenerator _generator;
 
         private readonly ConcurrentStack<PooledObjectWrapper<TObject>> _available =
             new ConcurrentStack<PooledObjectWrapper<TObject>>();
@@ -57,7 +54,6 @@ namespace ObjectPool
             ObjectPassivator = objectPassivator ?? (_ => true);
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _options = options ?? new ObjectPoolOptions();
-            _generator = new ProxyGenerator();
         }
 
         /// <param name="token"></param>
@@ -72,7 +68,7 @@ namespace ObjectPool
             if (_available.TryPop(out var existing))
             {
                 _active.TryAdd(existing.Id, existing);
-                return existing.Actual.SomeNotNull();
+                return existing.Proxy.SomeNotNull();
             }
 
             if (_active.Count >= _options.MaxObjects)
@@ -102,14 +98,10 @@ namespace ObjectPool
                 }
             }
 
-            var newProxy = new PooledObjectWrapper<TObject>(obj);
-            _active.TryAdd(newProxy.Id, newProxy);
-            var genProxy =
-                _generator.CreateInterfaceProxyWithTarget(
-                    obj,
-                    new PooledObjectInterceptor<TObject>(this, newProxy));
+            var wrapper = new PooledObjectWrapper<TObject>(this, obj);
+            _active.TryAdd(wrapper.Id, wrapper);
 
-            return genProxy.SomeNotNull();
+            return wrapper.Proxy.SomeNotNull();
         }
 
         private async Task<Option<TObject>> BlockAcquisition(CancellationToken token)
@@ -121,7 +113,7 @@ namespace ObjectPool
                 if (_available.TryPop(out var existing))
                 {
                     _active.TryAdd(existing.Id, existing);
-                    return existing.Actual.SomeNotNull();
+                    return existing.Proxy.SomeNotNull();
                 }
 
                 if (timer.Elapsed > timeout)
@@ -174,9 +166,9 @@ namespace ObjectPool
 
                 foreach (var proxy in _available)
                 {
-                    if (ObjectPassivator(proxy.Actual))
+                    if (ObjectPassivator(proxy.Proxy))
                     {
-                        proxy.Actual.Dispose();
+                        proxy.Dispose();
                     }
                 }
             }

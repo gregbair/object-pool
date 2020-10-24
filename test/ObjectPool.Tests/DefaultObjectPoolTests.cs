@@ -116,7 +116,7 @@ namespace ObjectPool.Tests
 
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => true);
 
-            var proxy = (await sut.GetObjectAsync()).ValueOrFailure().As<IFoo>();
+            var proxy = (await sut.GetObjectAsync()).ValueOrFailure();
             proxy.Dispose();
 
             sut.Dispose();

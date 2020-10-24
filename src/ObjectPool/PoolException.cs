@@ -2,12 +2,14 @@
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ObjectPool
 {
     /// <summary>
     /// An exception for when something goes wrong.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class PoolException : Exception
     {
         /// <summary>
