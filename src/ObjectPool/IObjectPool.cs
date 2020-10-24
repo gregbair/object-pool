@@ -40,7 +40,7 @@ namespace ObjectPool
         /// </summary>
         /// <param name="token">A <see cref="CancellationToken"/> used for timeouts.</param>
         /// <returns>An object of type <typeparamref name="TObject" />.</returns>
-        Task<Option<TObject>> GetObjectAsync(CancellationToken token = default);
+        Task<TObject> GetObjectAsync(CancellationToken token = default);
 
         /// <summary>
         /// Returns the object to the pool.

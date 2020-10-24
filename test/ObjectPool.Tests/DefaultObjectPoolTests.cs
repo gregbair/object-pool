@@ -56,8 +56,8 @@ namespace ObjectPool.Tests
 
             var source = new CancellationTokenSource();
             source.Cancel();
-            var result = await sut.GetObjectAsync(source.Token);
-            result.HasValue.Should().BeFalse();
+            Func<Task> act = async () =>  await sut.GetObjectAsync(source.Token);
+            await act.Should().ThrowAsync<OperationCanceledException>();
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace ObjectPool.Tests
 
             sut.ActiveCount.Should().Be(0);
             sut.AvailableCount.Should().Be(0);
-            var first = (await sut.GetObjectAsync()).ValueOrFailure();
+            var first = (await sut.GetObjectAsync());
             sut.ActiveCount.Should().Be(1);
             sut.AvailableCount.Should().Be(0);
             first.Dispose();
@@ -116,7 +116,7 @@ namespace ObjectPool.Tests
 
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => true);
 
-            var proxy = (await sut.GetObjectAsync()).ValueOrFailure();
+            var proxy = await sut.GetObjectAsync();
             proxy.Dispose();
 
             sut.Dispose();
@@ -133,7 +133,7 @@ namespace ObjectPool.Tests
 
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => false);
 
-            var proxy = (await sut.GetObjectAsync()).ValueOrFailure().As<IFoo>();
+            var proxy = await sut.GetObjectAsync();
             proxy.Dispose();
 
             sut.Dispose();
@@ -170,7 +170,7 @@ namespace ObjectPool.Tests
 
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, options);
 
-            using var obj = (await sut.GetObjectAsync()).ValueOrFailure();
+            using var obj = await sut.GetObjectAsync();
 
             Func<Task> act = async () => await sut.GetObjectAsync();
 

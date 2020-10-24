@@ -58,17 +58,14 @@ namespace ObjectPool
 
         /// <param name="token"></param>
         /// <inheritdoc/>
-        public async Task<Option<TObject>> GetObjectAsync(CancellationToken token = default)
+        public async Task<TObject> GetObjectAsync(CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-            {
-                return Option.None<TObject>();
-            }
+            token.ThrowIfCancellationRequested();
 
             if (_available.TryPop(out var existing))
             {
                 _active.TryAdd(existing.Id, existing);
-                return existing.Proxy.SomeNotNull();
+                return existing.Proxy;
             }
 
             if (_active.Count >= _options.MaxObjects)
@@ -101,10 +98,10 @@ namespace ObjectPool
             var wrapper = new PooledObjectWrapper<TObject>(this, obj);
             _active.TryAdd(wrapper.Id, wrapper);
 
-            return wrapper.Proxy.SomeNotNull();
+            return wrapper.Proxy;
         }
 
-        private async Task<Option<TObject>> BlockAcquisition(CancellationToken token)
+        private async Task<TObject> BlockAcquisition(CancellationToken token)
         {
             var timer = Stopwatch.StartNew();
             var timeout = _options.AcquisitionTimeout;
@@ -113,7 +110,7 @@ namespace ObjectPool
                 if (_available.TryPop(out var existing))
                 {
                     _active.TryAdd(existing.Id, existing);
-                    return existing.Proxy.SomeNotNull();
+                    return existing.Proxy;
                 }
 
                 if (timer.Elapsed > timeout)
