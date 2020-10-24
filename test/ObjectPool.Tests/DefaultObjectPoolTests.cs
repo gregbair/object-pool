@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using Optional.Unsafe;
 using Xunit;
 
 namespace ObjectPool.Tests

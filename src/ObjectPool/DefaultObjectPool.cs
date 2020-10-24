@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Greg Bair. All rights reserved.
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
-using Optional;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
