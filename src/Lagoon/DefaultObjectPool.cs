@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -98,6 +99,39 @@ namespace Lagoon
             _active.TryAdd(wrapper.Id, wrapper);
 
             return wrapper.Proxy;
+        }
+
+        private async Task BackgroundPrune(CancellationToken token = default)
+        {
+            var frequency = _options.SweepFrequency;
+            while (!token.IsCancellationRequested)
+            {
+                Prune();
+                await Task.Delay(frequency, token);
+            }
+        }
+
+        private void Prune()
+        {
+            var currentSize = _active.Count + _available.Count;
+            var minPoolSize = _options.MinObjects;
+
+            if (!_available.Any()) return;
+
+            if (currentSize <= minPoolSize) return;
+
+            var numObjToPrune = _available.Count;
+
+            for (var i = 0; i < numObjToPrune && currentSize > minPoolSize; i++)
+            {
+                if (!_available.TryPop(out var obj))
+                {
+                    break;
+                }
+
+                obj.Dispose();
+                currentSize--;
+            }
         }
 
         private async Task<TObject> BlockAcquisition(CancellationToken token)
