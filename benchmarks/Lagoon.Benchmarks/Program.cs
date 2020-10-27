@@ -6,7 +6,7 @@ namespace Lagoon.Benchmarks
     {
         private static void Main()
         {
-            var summary = BenchmarkRunner.Run<Benchmarks>();
+            var unused = BenchmarkRunner.Run<Benchmarks>();
         }
     }
 }

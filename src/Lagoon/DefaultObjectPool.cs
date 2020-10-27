@@ -29,6 +29,8 @@ namespace Lagoon
 
         private bool _isDisposed;
 
+        private CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
+
         /// <inheritdoc />
         public Func<TObject, bool> ObjectActivator { get; }
 
@@ -54,6 +56,8 @@ namespace Lagoon
             ObjectPassivator = objectPassivator ?? (_ => true);
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _options = options ?? new ObjectPoolOptions();
+
+            Task.Run(() => BackgroundPrune(_backgroundTokenSource.Token));
         }
 
         /// <param name="token"></param>
@@ -107,7 +111,7 @@ namespace Lagoon
             while (!token.IsCancellationRequested)
             {
                 Prune();
-                await Task.Delay(frequency, token);
+                await Task.Delay(frequency, token).ConfigureAwait(false);
             }
         }
 
@@ -116,9 +120,10 @@ namespace Lagoon
             var currentSize = _active.Count + _available.Count;
             var minPoolSize = _options.MinObjects;
 
-            if (!_available.Any()) return;
-
-            if (currentSize <= minPoolSize) return;
+            if (currentSize <= minPoolSize || !_available.Any())
+            {
+                return;
+            }
 
             var numObjToPrune = _available.Count;
 
@@ -201,6 +206,8 @@ namespace Lagoon
                         proxy.Dispose();
                     }
                 }
+
+                _backgroundTokenSource.Cancel();
             }
 
             _isDisposed = true;
