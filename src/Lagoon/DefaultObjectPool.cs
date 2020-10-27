@@ -208,6 +208,7 @@ namespace Lagoon
                 }
 
                 _backgroundTokenSource.Cancel();
+                _backgroundTokenSource.Dispose();
             }
 
             _isDisposed = true;
