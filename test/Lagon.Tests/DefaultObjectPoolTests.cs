@@ -27,7 +27,7 @@ namespace Lagoon.Tests
 
             await sut.GetObjectAsync();
 
-            factory.Verify(x => x.ActivateAsync(mockFoo.Object), Times.Once);
+            factory.Verify(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>()), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace Lagoon.Tests
 
             await sut.GetObjectAsync();
 
-            factory.Verify(x => x.ActivateAsync(mockFoo.Object), Times.Never);
+            factory.Verify(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Lagoon.Tests
             var mockFoo = new Mock<IFoo>();
             var factory = new Mock<IObjectPoolFactory<IFoo>>();
             factory.Setup(x => x.Create()).Returns(mockFoo.Object);
-            factory.Setup(x => x.ActivateAsync(mockFoo.Object)).ThrowsAsync(new InvalidOperationException("foo"));
+            factory.Setup(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException("foo"));
 
             var sut = new DefaultObjectPool<IFoo>(factory.Object);
 
@@ -126,15 +126,11 @@ namespace Lagoon.Tests
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object);
 
             sut.ActiveCount.Should().Be(0);
-            sut.AvailableCount.Should().Be(0);
             var first = (await sut.GetObjectAsync());
             sut.ActiveCount.Should().Be(1);
-            sut.AvailableCount.Should().Be(0);
             first.Dispose();
-            sut.AvailableCount.Should().Be(1);
             sut.ActiveCount.Should().Be(0);
             await sut.GetObjectAsync();
-            sut.AvailableCount.Should().Be(0);
             sut.ActiveCount.Should().Be(1);
         }
 
@@ -213,6 +209,8 @@ namespace Lagoon.Tests
             var options = new ObjectPoolOptions
             {
                 MaxObjects = 1,
+                MinObjects = 0,
+                SweepFrequency = TimeSpan.FromMinutes(20),
                 AcquisitionTimeout = TimeSpan.FromMilliseconds(500),
             };
 
@@ -234,7 +232,7 @@ namespace Lagoon.Tests
 
             var options = new ObjectPoolOptions
             {
-                MaxObjects = 10,
+                MaxObjects = 1,
                 MinObjects = 0,
                 AcquisitionTimeout = TimeSpan.FromMilliseconds(500),
                 SweepFrequency = TimeSpan.FromMilliseconds(100),
