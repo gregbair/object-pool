@@ -27,7 +27,7 @@ namespace Lagoon.Tests
 
             await sut.GetObjectAsync();
 
-            factory.Verify(x => x.ActivateAsync(mockFoo.Object), Times.Once);
+            factory.Verify(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>()), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -41,11 +41,45 @@ namespace Lagoon.Tests
 
             await sut.GetObjectAsync();
 
-            factory.Verify(x => x.ActivateAsync(mockFoo.Object), Times.Never);
+            factory.Verify(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]
-        public async Task CancelledTokenReturnsNone()
+        public async Task PassivateTruePassivates()
+        {
+            var mockFoo = new Mock<IFoo>();
+            var factory = new Mock<IObjectPoolFactory<IFoo>>();
+            factory.Setup(x => x.Create()).Returns(mockFoo.Object);
+
+            var sut = new DefaultObjectPool<IFoo>(factory.Object, objectPassivator: _ => true);
+
+            var obj = await sut.GetObjectAsync();
+
+            obj.Dispose();
+
+            sut.Dispose();
+            mockFoo.Verify(x => x.Dispose(), Times.Once);
+        }
+
+        [Fact]
+        public async Task PassivateFalseDoesNotPassivate()
+        {
+            var mockFoo = new Mock<IFoo>();
+            var factory = new Mock<IObjectPoolFactory<IFoo>>();
+            factory.Setup(x => x.Create()).Returns(mockFoo.Object);
+
+            var sut = new DefaultObjectPool<IFoo>(factory.Object, objectPassivator: _ => false);
+
+            var obj = await sut.GetObjectAsync();
+
+            obj.Dispose();
+
+            sut.Dispose();
+            mockFoo.Verify(x => x.Dispose(), Times.Never);
+        }
+
+        [Fact]
+        public async Task CancelledTokenThrows()
         {
             var mockFoo = new Mock<IFoo>();
             var factory = new Mock<IObjectPoolFactory<IFoo>>();
@@ -57,6 +91,21 @@ namespace Lagoon.Tests
             source.Cancel();
             Func<Task> act = async () =>  await sut.GetObjectAsync(source.Token);
             await act.Should().ThrowAsync<OperationCanceledException>();
+        }
+
+        [Fact]
+        public async Task GetObjectThrowsFactoryThrowsOnActivate()
+        {
+            var mockFoo = new Mock<IFoo>();
+            var factory = new Mock<IObjectPoolFactory<IFoo>>();
+            factory.Setup(x => x.Create()).Returns(mockFoo.Object);
+            factory.Setup(x => x.ActivateAsync(mockFoo.Object, It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException("foo"));
+
+            var sut = new DefaultObjectPool<IFoo>(factory.Object);
+
+            Func<Task> act = async () => await sut.GetObjectAsync();
+            var exc = await act.Should().ThrowExactlyAsync<PoolException>();
+            exc.Which.Message.Should().ContainEquivalentOf("when activating object");
         }
 
         [Fact]
@@ -77,15 +126,11 @@ namespace Lagoon.Tests
             var sut = new DefaultObjectPool<IFoo>(mockFactory.Object);
 
             sut.ActiveCount.Should().Be(0);
-            sut.AvailableCount.Should().Be(0);
             var first = (await sut.GetObjectAsync());
             sut.ActiveCount.Should().Be(1);
-            sut.AvailableCount.Should().Be(0);
             first.Dispose();
-            sut.AvailableCount.Should().Be(1);
             sut.ActiveCount.Should().Be(0);
             await sut.GetObjectAsync();
-            sut.AvailableCount.Should().Be(0);
             sut.ActiveCount.Should().Be(1);
         }
 
@@ -120,7 +165,7 @@ namespace Lagoon.Tests
 
             sut.Dispose();
 
-            mockFoo.Verify(x => x.Dispose(), Times.Once);
+            mockFoo.Verify(x => x.Dispose(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -164,6 +209,8 @@ namespace Lagoon.Tests
             var options = new ObjectPoolOptions
             {
                 MaxObjects = 1,
+                MinObjects = 0,
+                SweepFrequency = TimeSpan.FromMinutes(20),
                 AcquisitionTimeout = TimeSpan.FromMilliseconds(500),
             };
 
@@ -174,6 +221,34 @@ namespace Lagoon.Tests
             Func<Task> act = async () => await sut.GetObjectAsync();
 
             act.Should().ThrowExactly<PoolExhaustedException>();
+        }
+
+        [Fact]
+        public async Task BackgroundPrunePrunes()
+        {
+            var mockFactory = new Mock<IObjectPoolFactory<IFoo>>();
+            var mockObj = new Mock<IFoo>();
+            mockFactory.Setup(x => x.Create()).Returns(mockObj.Object);
+
+            var options = new ObjectPoolOptions
+            {
+                MaxObjects = 1,
+                MinObjects = 0,
+                AcquisitionTimeout = TimeSpan.FromMilliseconds(500),
+                SweepFrequency = TimeSpan.FromMilliseconds(100),
+            };
+
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, options);
+
+            var obj = await sut.GetObjectAsync();
+
+            obj.Dispose();
+
+            await Task.Delay(TimeSpan.FromMilliseconds(150));
+
+            sut.AvailableCount.Should().Be(0);
+            sut.ActiveCount.Should().Be(0);
+            mockObj.Verify(x => x.Dispose(), Times.Once);
         }
     }
 

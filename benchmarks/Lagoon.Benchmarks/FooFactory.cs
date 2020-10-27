@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Lagoon.Benchmarks
 {
@@ -9,6 +10,6 @@ namespace Lagoon.Benchmarks
             return new Foo();
         }
 
-        public async Task ActivateAsync(IFoo obj) => await obj.Initialize();
+        public async Task ActivateAsync(IFoo obj, CancellationToken token = default) => await obj.Initialize();
     }
 }

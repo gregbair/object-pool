@@ -23,6 +23,11 @@ namespace Lagoon
         public int MaxObjects { get; set; } = 10;
 
         /// <summary>
+        /// Gets or sets the frequency with which pruning and growing are checked.
+        /// </summary>
+        public TimeSpan SweepFrequency { get; set; } = TimeSpan.FromSeconds(10);
+
+        /// <summary>
         /// Gets or sets the amount of time to wait for acquisition before throwing an exception.
         /// </summary>
         public TimeSpan AcquisitionTimeout { get; set; } = TimeSpan.FromSeconds(30);

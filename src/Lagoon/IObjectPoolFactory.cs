@@ -2,6 +2,7 @@
 // Licensed under MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lagoon
@@ -23,7 +24,8 @@ namespace Lagoon
         /// Activates an object.
         /// </summary>
         /// <param name="obj">The object to activate.</param>
+        /// <param name="token">Token used for cancellation.</param>
         /// <returns>A <see cref="Task"/>.</returns>
-        Task ActivateAsync(TObject obj);
+        Task ActivateAsync(TObject obj, CancellationToken token = default);
     }
 }
