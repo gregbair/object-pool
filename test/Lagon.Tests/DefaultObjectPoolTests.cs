@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ObjectPool.Tests
+namespace Lagoon.Tests
 {
     public class DefaultObjectPoolTests
     {

@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 
-namespace ObjectPool.Benchmarks
+namespace Lagoon.Benchmarks
 {
     internal static class Program
     {

@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// An exception for when something goes wrong.

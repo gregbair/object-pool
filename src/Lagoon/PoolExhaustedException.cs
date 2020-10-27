@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// An exception for when the pool has no available objects.

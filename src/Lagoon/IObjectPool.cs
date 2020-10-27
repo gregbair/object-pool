@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// Interface for implementing an object pool.

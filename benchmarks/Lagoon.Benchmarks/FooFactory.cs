@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ObjectPool.Benchmarks
+namespace Lagoon.Benchmarks
 {
     public class FooFactory : IObjectPoolFactory<IFoo>
     {

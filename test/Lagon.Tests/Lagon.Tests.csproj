@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+    <AssemblyName>Lagoon.Tests</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ObjectPool\ObjectPool.csproj" />
+    <ProjectReference Include="..\..\src\Lagoon\Lagoon.csproj" />
   </ItemGroup>
 
 </Project>

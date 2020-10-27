@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
-namespace ObjectPool.Benchmarks
+namespace Lagoon.Benchmarks
 {
     public class Benchmarks : IDisposable
     {

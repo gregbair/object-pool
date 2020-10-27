@@ -6,6 +6,8 @@
     <LangVersion>preview</LangVersion>
     <nullable>enable</nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Lagoon</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

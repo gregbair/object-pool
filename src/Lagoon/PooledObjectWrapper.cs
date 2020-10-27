@@ -4,7 +4,7 @@
 using Castle.DynamicProxy;
 using System;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// A proxy to wrap objects of type <typeparamref name="TObject"/>.

@@ -5,22 +5,23 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6516716A-C4FC-41B6-8A17-72C85D5AA36C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectPool", "src\ObjectPool\ObjectPool.csproj", "{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon", "src\Lagoon\Lagoon.csproj", "{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72FCEE81-074B-4DE3-AD99-41196224964B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectPool.Tests", "test\ObjectPool.Tests\ObjectPool.Tests.csproj", "{74271B9E-6ADB-436F-8ABB-8368629CAE5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagon.Tests", "test\Lagon.Tests\Lagon.Tests.csproj", "{74271B9E-6ADB-436F-8ABB-8368629CAE5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{D0EF7EFE-0F61-46B6-9BB5-DAB08C41BE21}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{1A4EB1B9-8A25-4128-A89C-FFB015AD29C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectPool.Benchmarks", "benchmarks\ObjectPool.Benchmarks\ObjectPool.Benchmarks.csproj", "{C551AC79-0C26-4F9F-9683-C9CA05A5D804}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon.Benchmarks", "benchmarks\Lagoon.Benchmarks\Lagoon.Benchmarks.csproj", "{C551AC79-0C26-4F9F-9683-C9CA05A5D804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

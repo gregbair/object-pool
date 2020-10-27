@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// Options for an <see cref="DefaultObjectPool{TObject}"/>.

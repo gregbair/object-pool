@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// Standard implementation of <see cref="IObjectPool{TObject}"/>.

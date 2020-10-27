@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ObjectPool.Benchmarks
+namespace Lagoon.Benchmarks
 {
     public interface IFoo : IDisposable
     {

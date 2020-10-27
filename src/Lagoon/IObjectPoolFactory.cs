@@ -4,7 +4,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ObjectPool
+namespace Lagoon
 {
     /// <summary>
     /// Creates and activates an object.
