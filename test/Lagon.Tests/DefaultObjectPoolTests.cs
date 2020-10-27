@@ -165,7 +165,7 @@ namespace Lagoon.Tests
 
             sut.Dispose();
 
-            mockFoo.Verify(x => x.Dispose(), Times.Once);
+            mockFoo.Verify(x => x.Dispose(), Times.AtLeastOnce);
         }
 
         [Fact]
