@@ -1,8 +1,8 @@
 # Lagoon
 
-![.NET Core](https://github.com/gregbair/lagoon/workflows/.NET%20Core/badge.svg?branch=main) 
+[![.NET Core](https://github.com/gregbair/lagoon/workflows/.NET%20Core/badge.svg?branch=main)](https://github.com/gregbair/lagoon/actions?query=workflow%3A%22.NET+Core%22)
 
-![Nuget](https://img.shields.io/nuget/v/Lagoon?style=plastic)
+[![Nuget](https://img.shields.io/nuget/v/Lagoon?style=plastic)](https://www.nuget.org/packages/Lagoon/)
 
 Lagoon is an object pool. It pools objects that are expensive to initialize. Think database connections or network connections in general.
 
