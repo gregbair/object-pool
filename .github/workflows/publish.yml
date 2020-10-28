@@ -15,6 +15,6 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Pack
-      run: dotnet pack --version-suffix "`date -u +%Y%m%d%H%M%S`" -o .
+      run: dotnet pack --version-suffix "beta.`date -u +%Y%m%d%H%M%S`" -o .
     - name: Push to nuget.org
       run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
