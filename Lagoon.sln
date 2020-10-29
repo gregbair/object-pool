@@ -17,7 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{D0EF7E
 		LICENSE = LICENSE
 		.editorconfig = .editorconfig
 		README.md = README.md
-		Directory.Build.props = Directory.Build.props
 		src\Directory.Build.props = src\Directory.Build.props
 		test\Directory.Build.props = test\Directory.Build.props
 	EndProjectSection

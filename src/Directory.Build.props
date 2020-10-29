@@ -4,6 +4,18 @@
         <LangVersion>preview</LangVersion>
         <nullable>enable</nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <!-- nuget -->
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <Authors>gregbair</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright 2020 (c) Greg Bair. All rights reserved.</Copyright>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/gregbair/lagoon</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
