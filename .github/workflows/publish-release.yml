@@ -1,0 +1,22 @@
+name: Publish Prerelease
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Pack
+      run: dotnet pack -o .
+    - name: Push to nuget.org
+      run: dotnet nuget push Lagoon.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+    - name: Push to nuget.org
+      run: dotnet nuget push Lagoon.DependencyInjection.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
