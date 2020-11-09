@@ -31,9 +31,4 @@ pool.Dispose(); // the pool is disposed, also disposing all objects in the pool.
 - The objects to be pooled must implement `IDisposable`.
 - The pool itself is meant to be used throughout your application.
 
-## TODO
-
-- [ ] Add `IServiceCollection` extension method(s) to easily add to DI.
-- [ ] Publish NuGet packages
-
 This repo is a companion to a [blog series](https://www.gregbair.dev/tags/object-pool/) about object pool patterns.

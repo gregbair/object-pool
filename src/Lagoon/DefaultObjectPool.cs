@@ -28,9 +28,9 @@ namespace Lagoon
         private readonly ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>> _active =
             new ConcurrentDictionary<Guid, PooledObjectWrapper<TObject>>();
 
-        private bool _isDisposed;
+        private readonly CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
 
-        private CancellationTokenSource _backgroundTokenSource = new CancellationTokenSource();
+        private bool _isDisposed;
 
         /// <inheritdoc />
         public Func<TObject, bool> ObjectActivator { get; }
