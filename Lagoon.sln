@@ -1,33 +1,36 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.132
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6516716A-C4FC-41B6-8A17-72C85D5AA36C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon", "src\Lagoon\Lagoon.csproj", "{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lagoon", "src\Lagoon\Lagoon.csproj", "{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{72FCEE81-074B-4DE3-AD99-41196224964B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon.Tests", "test\Lagoon.Tests\Lagoon.Tests.csproj", "{74271B9E-6ADB-436F-8ABB-8368629CAE5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lagoon.Tests", "test\Lagoon.Tests\Lagoon.Tests.csproj", "{74271B9E-6ADB-436F-8ABB-8368629CAE5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{D0EF7EFE-0F61-46B6-9BB5-DAB08C41BE21}"
 	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		LICENSE = LICENSE
 		.editorconfig = .editorconfig
-		README.md = README.md
+		.gitignore = .gitignore
 		src\Directory.Build.props = src\Directory.Build.props
 		test\Directory.Build.props = test\Directory.Build.props
+		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
+		LICENSE = LICENSE
+		.github\workflows\publish-prerelease.yml = .github\workflows\publish-prerelease.yml
+		.github\workflows\publish-release.yml = .github\workflows\publish-release.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{1A4EB1B9-8A25-4128-A89C-FFB015AD29C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon.Benchmarks", "benchmarks\Lagoon.Benchmarks\Lagoon.Benchmarks.csproj", "{C551AC79-0C26-4F9F-9683-C9CA05A5D804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lagoon.Benchmarks", "benchmarks\Lagoon.Benchmarks\Lagoon.Benchmarks.csproj", "{C551AC79-0C26-4F9F-9683-C9CA05A5D804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon.DependencyInjection", "src\Lagoon.DependencyInjection\Lagoon.DependencyInjection.csproj", "{FF69C250-CAD4-45E9-9648-E7E992CDDC70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lagoon.DependencyInjection", "src\Lagoon.DependencyInjection\Lagoon.DependencyInjection.csproj", "{FF69C250-CAD4-45E9-9648-E7E992CDDC70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lagoon.DependencyInjection.Tests", "test\Lagoon.DependencyInjection.Tests\Lagoon.DependencyInjection.Tests.csproj", "{4811B6DA-14B7-4DE4-AEDD-53ED64734961}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lagoon.DependencyInjection.Tests", "test\Lagoon.DependencyInjection.Tests\Lagoon.DependencyInjection.Tests.csproj", "{4811B6DA-14B7-4DE4-AEDD-53ED64734961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,9 +40,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -103,11 +103,17 @@ Global
 		{4811B6DA-14B7-4DE4-AEDD-53ED64734961}.Release|x86.ActiveCfg = Release|Any CPU
 		{4811B6DA-14B7-4DE4-AEDD-53ED64734961}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1BF86F8F-9302-4B81-90F9-23A40F5F4BF5} = {6516716A-C4FC-41B6-8A17-72C85D5AA36C}
 		{74271B9E-6ADB-436F-8ABB-8368629CAE5F} = {72FCEE81-074B-4DE3-AD99-41196224964B}
 		{C551AC79-0C26-4F9F-9683-C9CA05A5D804} = {1A4EB1B9-8A25-4128-A89C-FFB015AD29C8}
 		{FF69C250-CAD4-45E9-9648-E7E992CDDC70} = {6516716A-C4FC-41B6-8A17-72C85D5AA36C}
 		{4811B6DA-14B7-4DE4-AEDD-53ED64734961} = {72FCEE81-074B-4DE3-AD99-41196224964B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B43EEE7B-BDC6-4A60-BECC-E43C8E93EEF0}
 	EndGlobalSection
 EndGlobal
