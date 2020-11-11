@@ -21,8 +21,8 @@ namespace Lagoon.DependencyInjection.Tests
         {
             var sc = new ServiceCollection();
 
-            Func<SomeClass, bool> activator = some => true;
-            Func<SomeClass, bool> passivator = some => true;
+            Func<SomeClass, bool> activator = _ => true;
+            Func<SomeClass, bool> passivator = _ => true;
             sc.AddSingleton<IObjectPoolFactory<SomeClass>, SomeFactory>();
 
             sc.AddObjectPool(options =>
@@ -68,7 +68,7 @@ namespace Lagoon.DependencyInjection.Tests
         {
             public void Dispose()
             {
-                throw new NotImplementedException();
+                GC.SuppressFinalize(this);
             }
         }
     }

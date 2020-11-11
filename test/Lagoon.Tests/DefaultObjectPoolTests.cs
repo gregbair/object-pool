@@ -158,7 +158,7 @@ namespace Lagoon.Tests
             var mockFoo = new Mock<IFoo>();
             mockFactory.Setup(x => x.Create()).Returns(mockFoo.Object);
 
-            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => true);
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: _ => true);
 
             var proxy = await sut.GetObjectAsync();
             proxy.Dispose();
@@ -175,7 +175,7 @@ namespace Lagoon.Tests
             var mockFoo = new Mock<IFoo>();
             mockFactory.Setup(x => x.Create()).Returns(mockFoo.Object);
 
-            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: x => false);
+            var sut = new DefaultObjectPool<IFoo>(mockFactory.Object, objectPassivator: _ => false);
 
             var proxy = await sut.GetObjectAsync();
             proxy.Dispose();
