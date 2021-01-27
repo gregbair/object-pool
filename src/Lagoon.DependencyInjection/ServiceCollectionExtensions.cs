@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
+[assembly:CLSCompliant(true)]
+
 namespace Lagoon.DependencyInjection
 {
     /// <summary>

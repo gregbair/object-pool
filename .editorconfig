@@ -13,5 +13,5 @@ indent_style = space
 dotnet_diagnostic.SA1309.severity = none
 dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1202.severity = none
-dotnet.diagnostic.SA1649.severity = none
-dotnet.diagnostic.CA1806.severity = none
+dotnet_diagnostic.SA1649.severity = none
+dotnet_diagnostic.CA1806.severity = none
