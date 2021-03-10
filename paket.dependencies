@@ -1,0 +1,11 @@
+source https://api.nuget.org/v3/index.json
+
+nuget BenchmarkDotNet 0.12.1
+nuget coverlet.collector 3.0.3
+nuget FluentAssertions 5.10.3
+nuget Microsoft.Extensions.DependencyInjection 5.0.1
+nuget Microsoft.Extensions.DependencyInjection.Abstractions 5.0.0
+nuget Microsoft.NET.Test.Sdk 16.8.3
+nuget Moq 4.16.0
+nuget xunit 2.4.1
+nuget xunit.runner.visualstudio 2.4.3
