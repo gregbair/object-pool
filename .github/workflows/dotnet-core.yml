@@ -19,8 +19,10 @@ jobs:
         dotnet-version: 5.0.100
     - name: Restore tools
       run: dotnet tool restore 
+    - name: Install dependencies
+      run: dotnet paket install
     - name: Build
-      run: dotnet build --configuration Release -v n
+      run: dotnet build --configuration Release --no-restore -v n
     - name: Test
       run: dotnet test --no-restore -v n
     - name: Run benchmarks
