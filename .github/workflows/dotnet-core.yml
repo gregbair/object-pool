@@ -20,7 +20,7 @@ jobs:
     - name: Restore tools
       run: dotnet tool restore 
     - name: Install dependencies
-      run: paket install
+      run: dotnet restore -v n
     - name: Build
       run: dotnet build --configuration Release --no-restore -v n
     - name: Test
